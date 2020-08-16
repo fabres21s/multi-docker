@@ -1,0 +1,23 @@
+sudo: required
+services:
+   - docker
+
+before_install:
+   - docker build -t fabres21s/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+   - docker run fabres21s/react-test npm test -- --coverage
+
+after_success:
+   - docker build -t fabres21s/multi-client ./client
+   - docker build -t fabres21s/multi-nginx ./nginx
+   - docker build -t fabres21s/multi-server ./server
+   - docker build -t fabres21s/multi-worker ./worker
+
+   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+   - docker push fabres21s/multi-client
+   - docker push fabres21s/multi-nginx
+   - docker push fabres21s/multi-server
+   - docker push fabres21s/multi-worker
+
+
