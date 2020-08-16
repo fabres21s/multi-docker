@@ -6,7 +6,7 @@ before_install:
    - docker build -t fabres21s/react-test -f ./client/Dockerfile.dev ./client
 
 script:
-   - docker run fabres21s/react-test npm test -- --coverage
+   - docker run  -e CI=true fabres21s/react-test npm test
 
 after_success:
    - docker build -t fabres21s/multi-client ./client
